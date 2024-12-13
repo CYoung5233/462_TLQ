@@ -1,14 +1,14 @@
 {
 	"README": "See ./deploy/README.md for help!",
 
-	"functionName":     "helloWorld",
+	"functionName":     "462_SAAF_java",
 
-	"lambdaHandler": "lambda.Hello::handleRequest",
+	"lambdaHandler": "lambda.Transform::handleRequest",
 	"lambdaRoleARN": "",
 	"lambdaSubnets": "",
 	"lambdaSecurityGroups": "",
 	"lambdaEnvironment": "Variables={EXAMPLEVAR1=VAL1,EXAMPLEVAR2=VAL2}",
-	"lambdaRuntime": "java11",
+	"lambdaRuntime": "java21",
 
 	"ibmHandler": "ibm.Hello",
 
