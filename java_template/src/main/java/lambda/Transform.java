@@ -12,6 +12,8 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3Object;
 
+import saaf.Inspector;
+
 // import saaf.Inspector;
 // import saaf.Response;
 
@@ -31,7 +33,7 @@ public class Transform {
         System.out.println("Entered Transform main.");
         try {
             Request req = new Request("Testing", "project.bucket462.tlq", "100_Sales_Records.csv", 100, 14);
-            parseCSV(req);
+            parseCSV(req, new Inspector());
             System.out.println("MADE IT PAST TRANSFORM PARSE IN MAIN");
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,13 +45,15 @@ public class Transform {
      * @param req
      * @return
      */
-    public static String parseCSV(Request req) {
+    public static String parseCSV(Request req, Inspector inspector) {
 
         AmazonS3 s3Client = AmazonS3ClientBuilder.standard().build();
         //get object file using source bucket and srcKey name
         try (S3Object s3Object = s3Client.getObject(new GetObjectRequest(req.getBucketname(), req.getFilename()))) {
             //get content of the file
+            inspector.addTimeStamp("TRANSFORM_FETCH_CSV_START");
             InputStream objectData = s3Object.getObjectContent();
+            inspector.addTimeStamp("TRANSFORM_FETCH_CSV_END");
             //scanning data line by line
             String line;
             Scanner scanner = new Scanner(objectData);
@@ -87,7 +91,9 @@ public class Transform {
             meta.setContentLength(bytes.length);
             meta.setContentType("text/plain");
             // Create new file on S3
+            inspector.addTimeStamp("TRANSFORM_UPLOAD_JSON_START");
             s3Client.putObject(req.getBucketname(), "transformed_data.json", is, meta);
+            inspector.addTimeStamp("TRANSFORM_UPLOAD_JSON_END");
 
             //System.out.println("PARSED JSON DATA =\n" + sw.toString());
             return sw.toString();

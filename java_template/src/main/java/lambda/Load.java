@@ -18,6 +18,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 
+import saaf.Inspector;
+
 public class Load {
     // public static void main(String[] args) {
     //     System.out.println("main");
@@ -28,7 +30,7 @@ public class Load {
     //     }
     // }
 
-    public static void loadJSONtoDB(Request req) {
+    public static void loadJSONtoDB(Request req, Inspector inspector) {
         // Step 1: Load environment variables
         String dbHost = System.getenv("DB_HOST");
         String dbUser = System.getenv("DB_USER");
@@ -41,7 +43,9 @@ public class Load {
         //get object file using source bucket and srcKey name
         try (S3Object s3Object = s3Client.getObject(new GetObjectRequest(req.getBucketname(), "transformed_data.json"))) {
             //get content of the file
+            inspector.addTimeStamp("LOAD_FETCH_JSON_START");
             InputStream objectData = s3Object.getObjectContent();
+            inspector.addTimeStamp("LOAD_FETCH_JSON_START");
 
             //Read the transformed JSON file
             List<Map<String, Object>> records = parseJSON(objectData);

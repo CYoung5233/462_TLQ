@@ -45,15 +45,15 @@ public class Controller implements RequestHandler<Request, HashMap<String, Objec
         response.setValue("Bucket:" + bucketname + " filename:" + filename + " size: " + row + " rows, " + col + " cols.");
 
         inspector.addTimeStamp("ENTERING_TRANSFORM");
-        Transform.parseCSV(request);
+        Transform.parseCSV(request, inspector);
         inspector.addTimeStamp("LEAVING_TRANSFORM");
 
         inspector.addTimeStamp("ENTERING_LOAD");
-        Load.loadJSONtoDB(request);
+        Load.loadJSONtoDB(request, inspector);
         inspector.addTimeStamp("LEAVING_LOAD");
 
         inspector.addTimeStamp("ENTERING_QUERY");
-        Query.fetchData();
+        Query.fetchData(inspector);
         inspector.addTimeStamp("LEAVING_QUERY");
 
         inspector.inspectAllDeltas();

@@ -13,6 +13,8 @@ import java.sql.Statement;
 // import java.util.List;
 // import java.util.Map;
 
+import saaf.Inspector;
+
 
 public class Query {
 
@@ -25,15 +27,16 @@ public class Query {
     private static String DB_URL;
 
     // Method to fetch all data (joined from both Order and Item tables)
-    public static String fetchData() {
+    public static String fetchData(Inspector inspector) {
         //System.out.println("MADE IT TO QUERY");
         loadDB();
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
             //System.out.println("QUERY - Database connected.");
             String query = "SELECT * FROM sales";
             String result = null;
-
+            inspector.addTimeStamp("QUERY_EXECUTE_START");
             try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+                inspector.addTimeStamp("QUERY_EXECUTE_END");
 
                 StringBuilder resultBuilder = new StringBuilder();
                 int columnCount = rs.getMetaData().getColumnCount(); // Get the number of columns
